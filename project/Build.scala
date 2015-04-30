@@ -18,6 +18,9 @@ object ScodecBuild extends Build {
     publishArtifact := false
   )
 
+  def scalajs: Project => Project =
+    _.enablePlugins(org.scalajs.sbtplugin.ScalaJSPlugin)
+
   lazy val core: Project = project.in(file("core")).
     settings(commonSettings: _*).
     settings(scodecPrimaryModule: _*).
@@ -39,7 +42,7 @@ object ScodecBuild extends Build {
       ),
       binaryIssueFilters ++= Seq(
       ).map { method => ProblemFilters.exclude[MissingMethodProblem](method) }
-  )
+  ).configure(scalajs)
 
   lazy val benchmark: Project = project.in(file("benchmark")).dependsOn(core).settings(jmhSettings: _*).
     settings(commonSettings: _*).
